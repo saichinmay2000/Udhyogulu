@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
               //Slider
               Container(
                   height: 232,
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(9),
                   color: Colors.white,
                   child: slider.length != 0
                       ? Carousel(
