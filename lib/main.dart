@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: List.generate(top_stories_viewlength, (index) {
                 return Card(
                   margin:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),

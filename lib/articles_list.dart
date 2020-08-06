@@ -48,6 +48,10 @@ class _ArticlesListState extends State<ArticlesList> {
     var result = await http.get(widget.link);
     var r = utf8.decode(result.bodyBytes);
     articles = json.decode(r)['articles'];
+    if (articles.length > 10)
+      viewlength = 10;
+    else
+      viewlength = articles.length;
 
     setState(() {});
   }
@@ -84,7 +88,7 @@ class _ArticlesListState extends State<ArticlesList> {
               List<Widget>.generate(viewlength, (index) {
                 return Card(
                   margin:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
