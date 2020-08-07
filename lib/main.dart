@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:udhyogulu/apis.dart';
 import 'package:udhyogulu/article.dart';
+import 'package:udhyogulu/article_web_view.dart';
 import 'package:udhyogulu/category.dart';
 import 'package:udhyogulu/drawer.dart';
 
@@ -71,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
       top_stories_viewlength = 10;
     else
       top_stories_viewlength = top_stories.length;
-
     setState(() {});
   }
 
@@ -145,21 +145,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         autoplayDuration: Duration(seconds: 8),
                         images: List.generate(
                             slider.length,
-                            (index) => Container(
-                                height: 200,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                alignment: Alignment.topCenter,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    slider[index]['slider_image'],
-                                    fit: BoxFit.fitWidth,
+                            (index) => InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleWeb(url:'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyogulu/${slider[index]['slider_url']}'),));
+                              },
+                              child: Container(
+                                  height: 200,
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  alignment: Alignment.topCenter,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                ))),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      slider[index]['slider_image'],
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  )),
+                            )),
                       )
                     : Container()),
             //Top Stories
