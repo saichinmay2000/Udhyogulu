@@ -5,11 +5,14 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:udhyogulu/apis.dart';
+import 'package:udhyogulu/article.dart';
+import 'package:udhyogulu/category.dart';
 import 'package:udhyogulu/drawer.dart';
 
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(primaryColor: Colors.red),
+    debugShowCheckedModeBanner: false,
     home: MyHomePage(
     ),
   ));
@@ -97,7 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: List.generate(categories.length, (index) {
                     return InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Category(category: categories[index],),));
+                      },
                       child: Container(
                         height: 38,
                         decoration: BoxDecoration(
@@ -160,62 +165,70 @@ class _MyHomePageState extends State<MyHomePage> {
             //Top Stories
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: List.generate(top_stories_viewlength, (index) {
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Container(
-                    height: 100,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              top_stories[index]['urlToImage'],
-                              width: 100,
-                              height: 100,
-                            )),
-                        SizedBox(
-                          width: 2,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width - 124,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Flexible(
-                                  child: Text(
-                                top_stories[index]['title'],
-                                style: TextStyle(
-                                    fontFamily: 'Header', fontSize: 18),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+              children: List<Widget>.generate(top_stories_viewlength, (index) {
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Article(top_stories[index]),));
+                  },
+                  child: Card(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Container(
+                      height: 100,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                top_stories[index]['urlToImage'],
+                                width: 100,
+                                height: 100,
                               )),
-                              Flexible(
-                                  child: Text(
-                                top_stories[index]['description'],
-                                style: TextStyle(fontFamily: 'Desc'),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                            ],
+                          SizedBox(
+                            width: 2,
                           ),
-                        ),
-                        SizedBox(
-                          width: 1,
-                        ),
-                      ],
+                          Container(
+                            width: MediaQuery.of(context).size.width - 124,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Flexible(
+                                    child: Text(
+                                  top_stories[index]['title'],
+                                  style: TextStyle(
+                                      fontFamily: 'Header', fontSize: 18),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                                Flexible(
+                                    child: Text(
+                                  top_stories[index]['description'],
+                                  style: TextStyle(fontFamily: 'Desc'),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 1,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
-              }),
+              })+[Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(child: Text(top_stories_viewlength==top_stories.length?'____':'Loading....')),
+              )],
             )
           ],
         ),

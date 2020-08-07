@@ -66,6 +66,7 @@ class _NewsDrawerState extends State<NewsDrawer>
                                 title: Text(states[index]['districts'][i]
                                     ['district_name']),
                                 onTap: () {
+                                  Navigator.pop(context);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

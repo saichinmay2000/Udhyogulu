@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:udhyogulu/apis.dart';
 import 'package:http/http.dart' as http;
+import 'package:udhyogulu/article.dart';
 
 class ArticlesList extends StatefulWidget {
   String title, link;
@@ -86,61 +87,69 @@ class _ArticlesListState extends State<ArticlesList> {
                 )
               ] +
               List<Widget>.generate(viewlength, (index) {
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Container(
-                    height: 100,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              articles[index]['urlToImage'],
-                              width: 100,
-                              height: 100,
-                            )),
-                        SizedBox(
-                          width: 2,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width - 124,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                height: 4,
-                              ),
-                              Flexible(
-                                  child: Text(
-                                articles[index]['title'],
-                                style: TextStyle(
-                                    fontFamily: 'Header', fontSize: 18),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Article(articles[index]),));
+                  },
+                  child: Card(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Container(
+                      height: 100,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                articles[index]['urlToImage'],
+                                width: 100,
+                                height: 100,
                               )),
-                              Flexible(
-                                  child: Text(
-                                articles[index]['description'],
-                                style: TextStyle(fontFamily: 'Desc'),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                            ],
+                          SizedBox(
+                            width: 2,
                           ),
-                        ),
-                        SizedBox(
-                          width: 1,
-                        ),
-                      ],
+                          Container(
+                            width: MediaQuery.of(context).size.width - 124,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Flexible(
+                                    child: Text(
+                                  articles[index]['title'],
+                                  style: TextStyle(
+                                      fontFamily: 'Header', fontSize: 18),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                                Flexible(
+                                    child: Text(
+                                  articles[index]['description'],
+                                  style: TextStyle(fontFamily: 'Desc'),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 1,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
-              }),
+              })+[Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(child: Text(viewlength==articles.length?'____':'Loading....')),
+              )],
         ),
       ),
     );
