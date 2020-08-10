@@ -15,6 +15,13 @@ class _ArticleState extends State<Article> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              })
+        ],
         backgroundColor: Colors.red,
         elevation: 0,
         title: Padding(

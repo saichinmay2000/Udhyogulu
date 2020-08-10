@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:udhyogulu/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleWeb extends StatefulWidget {
@@ -17,6 +18,13 @@ class _ArticleWebState extends State<ArticleWeb> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              })
+        ],
         backgroundColor: Colors.red,
         elevation: 0,
         title: Padding(
