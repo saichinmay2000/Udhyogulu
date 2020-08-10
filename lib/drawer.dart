@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:udhyogulu/apis.dart';
+import 'package:udhyogulu/article_web_view.dart';
 import 'package:udhyogulu/articles_list.dart';
 
 class NewsDrawer extends StatefulWidget {
@@ -14,7 +15,7 @@ class _NewsDrawerState extends State<NewsDrawer>
     with AutomaticKeepAliveClientMixin {
   final String url =
       'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyoguluapi/';
-  List<dynamic> states = [];
+  List<dynamic> states = [], notes = [];
 
   initState() {
     super.initState();
@@ -25,6 +26,10 @@ class _NewsDrawerState extends State<NewsDrawer>
     var result = await http.get(url + APIS.STATES);
     var r = utf8.decode(result.bodyBytes);
     states = json.decode(r)['states'];
+    setState(() {});
+    result = await http.get(url + APIS.NOTES);
+    r = utf8.decode(result.bodyBytes);
+    notes = json.decode(r)['notes'];
     setState(() {});
   }
 
@@ -53,34 +58,46 @@ class _NewsDrawerState extends State<NewsDrawer>
               child: SingleChildScrollView(
                 child: Column(
                   children: states.length != 0
-                      ? List.generate(states.length, (index) {
-                          return ExpansionTile(
-                            title: Text(
-                              states[index]['state_name'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800, fontSize: 18),
-                            ),
-                            children: List.generate(
-                                states[index]['districts'].length, (i) {
-                              return ListTile(
-                                title: Text(states[index]['districts'][i]
-                                    ['district_name']),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ArticlesList(
-                                            states[index]['districts'][i]
-                                                ['district_name'],
-                                            states[index]['districts'][i]
-                                                ['district_url']),
-                                      ));
-                                },
-                              );
-                            }),
-                          );
-                        })
+                      ? List<Widget>.generate(states.length, (index) {
+                            return ExpansionTile(
+                              title: Text(
+                                states[index]['state_name'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w800, fontSize: 18),
+                              ),
+                              children: List.generate(
+                                  states[index]['districts'].length, (i) {
+                                return ListTile(
+                                  title: Text(states[index]['districts'][i]
+                                      ['district_name']),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ArticlesList(
+                                              states[index]['districts'][i]
+                                                  ['district_name'],
+                                              states[index]['districts'][i]
+                                                  ['district_url']),
+                                        ));
+                                  },
+                                );
+                              }),
+                            );
+                          }) +
+                          List<Widget>.generate(notes.length, (index) {
+                            return ListTile(
+                              title: Text(notes[index]['note_name']),
+                              onTap: (){
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ArticleWeb(url:notes[index]['note_weburl']),
+                                    ));
+                              },
+                            );
+                          })
                       : [
                           LinearProgressIndicator(
                             valueColor: AlwaysStoppedAnimation(Colors.red),

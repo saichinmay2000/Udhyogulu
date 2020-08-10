@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:udhyogulu/article.dart';
+import 'package:udhyogulu/article_web_view.dart';
 
 class Category extends StatefulWidget {
   final category;
@@ -137,7 +138,7 @@ class _CategoryState extends State<Category> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Article(subcatarticles[selected_sub_cat]['articles'][index]),
+                              builder: (context) => ArticleWeb(url:subcatarticles[selected_sub_cat]['articles'][index]['url']),
                             ));
                       },
                       child: Card(
