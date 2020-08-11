@@ -8,8 +8,9 @@ import 'package:udhyogulu/main.dart';
 
 class Category extends StatefulWidget {
   final category;
+  bool state;
 
-  const Category({Key key, this.category}) : super(key: key);
+  Category({Key key, this.category,this.state=false}) : super(key: key);
 
   @override
   _CategoryState createState() => _CategoryState();
@@ -20,12 +21,20 @@ class _CategoryState extends State<Category> {
 
   BoxDecoration selected_cont, unselected_cont;
   int selected_sub_cat = 0;
+  String sub = 'sub_category',suburl = 'subcategory_url',subname = 'subcategory_name';
 
   ScrollController scrollController = new ScrollController();
 
   @override
   void initState() {
-    subcategories = widget.category['sub_category'];
+    if(widget.state){
+      sub = 'districts';
+      suburl = 'district_url';
+      subname = 'district_name';
+    }
+    print('$sub $suburl ');
+    subcategories = widget.category[sub];
+    print(subcategories);
     selected_cont = BoxDecoration(
       color: Colors.blue,
     );
@@ -51,9 +60,9 @@ class _CategoryState extends State<Category> {
   }
 
   fetchArticles() async {
-    for (int i = 0; i < widget.category['sub_category'].length; i++) {
+    for (int i = 0; i < widget.category[sub].length; i++) {
       var result =
-          await http.get(widget.category['sub_category'][i]['subcategory_url']);
+          await http.get(widget.category[sub][i][suburl]);
       var r = utf8.decode(result.bodyBytes);
       subcatarticles.add({
         'articles': json.decode(r)['articles'],
@@ -86,7 +95,7 @@ class _CategoryState extends State<Category> {
         title: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Text(
-            '${widget.category['category_name']}',
+            widget.state?'${widget.category['state_name']}':'${widget.category['category_name']}',
             maxLines: 1,
             style: TextStyle(fontFamily: 'Header', fontSize: 24),
           ),
@@ -103,7 +112,7 @@ class _CategoryState extends State<Category> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: List.generate(
-                            widget.category['sub_category'].length, (index) {
+                            widget.category[sub].length, (index) {
                           return InkWell(
                             onTap: () {
                               setState(() {
@@ -120,8 +129,8 @@ class _CategoryState extends State<Category> {
                               margin: const EdgeInsets.all(6),
                               child: Center(
                                 child: Text(
-                                  widget.category['sub_category'][index]
-                                      ['subcategory_name'],
+                                  widget.category[sub][index]
+                                      [subname],
                                   style: TextStyle(
                                       color: selected_sub_cat == index
                                           ? Colors.white

@@ -9,18 +9,17 @@ import 'package:udhyogulu/article.dart';
 import 'package:udhyogulu/article_web_view.dart';
 import 'package:udhyogulu/category.dart';
 import 'package:udhyogulu/drawer.dart';
+import 'package:udhyogulu/storage.dart';
 
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(primaryColor: Colors.red),
     debugShowCheckedModeBanner: false,
-    home: MyHomePage(
-    ),
+    home: MyHomePage(),
   ));
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -36,19 +35,19 @@ class _MyHomePageState extends State<MyHomePage> {
   initState() {
     top_stories_scrollController.addListener(() {
       if (top_stories_scrollController.offset >=
-          top_stories_scrollController.position.maxScrollExtent &&
+              top_stories_scrollController.position.maxScrollExtent &&
           !top_stories_scrollController.position.outOfRange) {
         if (10 + top_stories_viewlength < top_stories.length)
           top_stories_viewlength += 10;
-        else{
+        else {
           top_stories_viewlength = top_stories.length;
         }
         setState(() {});
-      }});
+      }
+    });
     super.initState();
     fetchData();
   }
-
 
   @override
   void dispose() {
@@ -57,8 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<dynamic>> fetchData() async {
-    var result = await http.get(url + APIS.CATEGORIES);
+    var result = await http.get(url + APIS.STATES);
     var r = utf8.decode(result.bodyBytes);
+    Storage.states = json.decode(r)['states'];
+    setState(() {});
+    result = await http.get(url + APIS.CATEGORIES);
+    r = utf8.decode(result.bodyBytes);
     categories = json.decode(r)['categories'];
     setState(() {});
     result = await http.get(url + APIS.SLIDER_IMAGES);
@@ -83,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.red,
         elevation: 0,
         title: Padding(
-          padding: const EdgeInsets.only(top:8.0),
+          padding: const EdgeInsets.only(top: 8.0),
           child: Text(
             'ఉద్యోగులు',
             style: TextStyle(fontFamily: 'Header', fontSize: 24),
@@ -98,31 +101,118 @@ class _MyHomePageState extends State<MyHomePage> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: List.generate(categories.length, (index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Category(category: categories[index],),));
-                      },
-                      child: Container(
-                        height: 38,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 10),
-                        margin: const EdgeInsets.all(6),
-                        child: Center(
-                          child: Text(
-                            categories[index]['category_name'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600),
+                  children: [
+                        Container(
+                          height: 38,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 10),
+                          margin: const EdgeInsets.all(6),
+                          child: Center(
+                            child: Text(
+                              'హోమ్',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                        if (Storage.states.length != 0)
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Category(
+                                      category: Storage.states[0],
+                                      state: true,
+                                    ),
+                                  ));
+                            },
+                            child: Container(
+                              height: 38,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              margin: const EdgeInsets.all(6),
+                              child: Center(
+                                child: Text(
+                                  'ఆంధ్ర ప్రదేశ్',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (Storage.states.length != 0)
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Category(
+                                        category: Storage.states[1],
+                                        state: true),
+                                  ));
+                            },
+                            child: Container(
+                              height: 38,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              margin: const EdgeInsets.all(6),
+                              child: Center(
+                                child: Text(
+                                  'తెలంగాణ',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          )
+                      ] +
+                      List<Widget>.generate(categories.length, (index) {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Category(
+                                    category: categories[index],
+                                  ),
+                                ));
+                          },
+                          child: Container(
+                            height: 38,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(8)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 10),
+                            margin: const EdgeInsets.all(6),
+                            child: Center(
+                              child: Text(
+                                categories[index]['category_name'],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               ),
             ),
@@ -146,94 +236,111 @@ class _MyHomePageState extends State<MyHomePage> {
                         images: List.generate(
                             slider.length,
                             (index) => InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleWeb(url:'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyogulu/${slider[index]['slider_url']}'),));
-                              },
-                              child: Container(
-                                  height: 200,
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  alignment: Alignment.topCenter,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      slider[index]['slider_image'],
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  )),
-                            )),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ArticleWeb(
+                                              url:
+                                                  'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyogulu/${slider[index]['slider_url']}'),
+                                        ));
+                                  },
+                                  child: Container(
+                                      height: 200,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      alignment: Alignment.topCenter,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          slider[index]['slider_image'],
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      )),
+                                )),
                       )
                     : Container()),
             //Top Stories
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: List<Widget>.generate(top_stories_viewlength, (index) {
-                return InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Article(top_stories[index]),));
-                  },
-                  child: Card(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Container(
-                      height: 100,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                top_stories[index]['urlToImage'],
-                                width: 100,
-                                height: 100,
-                              )),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width - 124,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: 4,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Article(top_stories[index]),
+                            ));
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 8),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Container(
+                          height: 100,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    top_stories[index]['urlToImage'],
+                                    width: 100,
+                                    height: 100,
+                                  )),
+                              SizedBox(
+                                width: 2,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width - 124,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 4,
+                                    ),
+                                    Flexible(
+                                        child: Text(
+                                      top_stories[index]['title'],
+                                      style: TextStyle(
+                                          fontFamily: 'Header', fontSize: 18),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                    Flexible(
+                                        child: Text(
+                                      top_stories[index]['description'],
+                                      style: TextStyle(fontFamily: 'Desc'),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
+                                  ],
                                 ),
-                                Flexible(
-                                    child: Text(
-                                  top_stories[index]['title'],
-                                  style: TextStyle(
-                                      fontFamily: 'Header', fontSize: 18),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                                Flexible(
-                                    child: Text(
-                                  top_stories[index]['description'],
-                                  style: TextStyle(fontFamily: 'Desc'),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                              ],
-                            ),
+                              ),
+                              SizedBox(
+                                width: 1,
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 1,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              })+[Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(child: Text(top_stories_viewlength==top_stories.length?'____':'Loading....')),
-              )],
+                    );
+                  }) +
+                  [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                          child: Text(
+                              top_stories_viewlength == top_stories.length
+                                  ? '____'
+                                  : 'Loading....')),
+                    )
+                  ],
             )
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:udhyogulu/apis.dart';
 import 'package:udhyogulu/article_web_view.dart';
 import 'package:udhyogulu/articles_list.dart';
+import 'package:udhyogulu/storage.dart';
 
 class NewsDrawer extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _NewsDrawerState extends State<NewsDrawer>
     with AutomaticKeepAliveClientMixin {
   final String url =
       'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyoguluapi/';
-  List<dynamic> states = [], notes = [];
+  List<dynamic> notes = [];
 
   initState() {
     super.initState();
@@ -23,12 +24,8 @@ class _NewsDrawerState extends State<NewsDrawer>
   }
 
   Future<List<dynamic>> fetchData() async {
-    var result = await http.get(url + APIS.STATES);
+    var result = await http.get(url + APIS.NOTES);
     var r = utf8.decode(result.bodyBytes);
-    states = json.decode(r)['states'];
-    setState(() {});
-    result = await http.get(url + APIS.NOTES);
-    r = utf8.decode(result.bodyBytes);
     notes = json.decode(r)['notes'];
     setState(() {});
   }
@@ -57,18 +54,18 @@ class _NewsDrawerState extends State<NewsDrawer>
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: states.length != 0
-                      ? List<Widget>.generate(states.length, (index) {
+                  children: Storage.states.length != 0
+                      ? List<Widget>.generate(Storage.states.length, (index) {
                             return ExpansionTile(
                               title: Text(
-                                states[index]['state_name'],
+                                Storage.states[index]['state_name'],
                                 style: TextStyle(
                                     fontWeight: FontWeight.w800, fontSize: 18),
                               ),
                               children: List.generate(
-                                  states[index]['districts'].length, (i) {
+                                  Storage.states[index]['districts'].length, (i) {
                                 return ListTile(
-                                  title: Text(states[index]['districts'][i]
+                                  title: Text(Storage.states[index]['districts'][i]
                                       ['district_name']),
                                   onTap: () {
                                     Navigator.pop(context);
@@ -76,9 +73,10 @@ class _NewsDrawerState extends State<NewsDrawer>
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => ArticlesList(
-                                              states[index]['districts'][i]
+                                              Storage.states[index]['state_name']
+                                            ,  Storage.states[index]['districts'][i]
                                                   ['district_name'],
-                                              states[index]['districts'][i]
+                                              Storage.states[index]['districts'][i]
                                                   ['district_url']),
                                         ));
                                   },

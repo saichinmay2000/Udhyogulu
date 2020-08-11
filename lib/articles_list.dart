@@ -6,9 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:udhyogulu/article.dart';
 
 class ArticlesList extends StatefulWidget {
-  String title, link;
+  String title, link,state;
 
-  ArticlesList(this.title, this.link);
+  ArticlesList(this.state,this.title, this.link);
 
   @override
   _ArticlesListState createState() => _ArticlesListState();
@@ -74,7 +74,7 @@ class _ArticlesListState extends State<ArticlesList> {
         title: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Text(
-            'ఉద్యోగులు',
+            widget.state,
             style: TextStyle(fontFamily: 'Header', fontSize: 24),
           ),
         ),
