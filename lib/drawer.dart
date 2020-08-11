@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:share/share.dart';
 import 'package:udhyogulu/apis.dart';
 import 'package:udhyogulu/article_web_view.dart';
 import 'package:udhyogulu/articles_list.dart';
@@ -104,7 +105,7 @@ class _NewsDrawerState extends State<NewsDrawer>
                         ],
                 ),
               ),
-            )
+            ),
           ]),
     );
   }
@@ -112,3 +113,6 @@ class _NewsDrawerState extends State<NewsDrawer>
   @override
   bool get wantKeepAlive => true;
 }
+/*
+    Share.share('This app is fawesome');
+*/
