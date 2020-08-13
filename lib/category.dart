@@ -32,9 +32,7 @@ class _CategoryState extends State<Category> {
       suburl = 'district_url';
       subname = 'district_name';
     }
-    print('$sub $suburl ');
     subcategories = widget.category[sub];
-    print(subcategories);
     selected_cont = BoxDecoration(
       color: Colors.blue,
     );

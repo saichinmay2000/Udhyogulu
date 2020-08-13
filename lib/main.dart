@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:udhyogulu/apis.dart';
 import 'package:udhyogulu/article.dart';
 import 'package:udhyogulu/article_web_view.dart';
@@ -25,10 +26,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final String url =
-      'http://ec2-35-154-205-9.ap-south-1.compute.amazonaws.com/udhyoguluapi/';
+  final String url = 'http://api.udhyogulu.news/';
   List<dynamic> categories = [], slider = [], top_stories = [];
   ScrollController top_stories_scrollController = new ScrollController();
+  String breakingNews = '  ';
 
   int top_stories_viewlength = 0;
 
@@ -76,6 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
     else
       top_stories_viewlength = top_stories.length;
     setState(() {});
+    result = await http.get('http://api.udhyogulu.news/latestnews.php');
+    r = utf8.decode(result.bodyBytes);
+    breakingNews = json.decode(r)['latestnews'];
+    setState(() {});
   }
 
   @override
@@ -94,129 +99,160 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         bottom: PreferredSize(
             child: Container(
-              height: 56,
+              height: 78,
               width: double.infinity,
               color: Colors.white,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                        Container(
-                          height: 38,
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 10),
-                          margin: const EdgeInsets.all(6),
-                          child: Center(
-                            child: Text(
-                              'హోమ్',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                          padding: const EdgeInsets.only(top: 2),
+                          height: 20,
+                          child: Marquee(
+                            text: breakingNews,
+                            scrollAxis: Axis.horizontal,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            blankSpace: 10,
+                            velocity: 30,
+                          )),
+                      Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomRight: Radius.circular(16))),
+                        child: Text(
+                          'తాజా :',
+                          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),
                         ),
-                        if (Storage.states.length != 0)
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Category(
-                                      category: Storage.states[0],
-                                      state: true,
+                      ),
+                    ],
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                            Container(
+                              height: 38,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              margin: const EdgeInsets.all(6),
+                              child: Center(
+                                child: Text(
+                                  'హోమ్',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                            if (Storage.states.length != 0)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Category(
+                                          category: Storage.states[0],
+                                          state: true,
+                                        ),
+                                      ));
+                                },
+                                child: Container(
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  margin: const EdgeInsets.all(6),
+                                  child: Center(
+                                    child: Text(
+                                      'ఆంధ్ర ప్రదేశ్',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600),
                                     ),
-                                  ));
-                            },
-                            child: Container(
-                              height: 38,
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(8)),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              margin: const EdgeInsets.all(6),
-                              child: Center(
-                                child: Text(
-                                  'ఆంధ్ర ప్రదేశ్',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          ),
-                        if (Storage.states.length != 0)
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Category(
-                                        category: Storage.states[1],
-                                        state: true),
-                                  ));
-                            },
-                            child: Container(
-                              height: 38,
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(8)),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 10),
-                              margin: const EdgeInsets.all(6),
-                              child: Center(
-                                child: Text(
-                                  'తెలంగాణ',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          )
-                      ] +
-                      List<Widget>.generate(categories.length, (index) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Category(
-                                    category: categories[index],
                                   ),
-                                ));
-                          },
-                          child: Container(
-                            height: 38,
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(8)),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            margin: const EdgeInsets.all(6),
-                            child: Center(
-                              child: Text(
-                                categories[index]['category_name'],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600),
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      }),
-                ),
+                            if (Storage.states.length != 0)
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Category(
+                                            category: Storage.states[1],
+                                            state: true),
+                                      ));
+                                },
+                                child: Container(
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
+                                  margin: const EdgeInsets.all(6),
+                                  child: Center(
+                                    child: Text(
+                                      'తెలంగాణ',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ),
+                              )
+                          ] +
+                          List<Widget>.generate(categories.length, (index) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Category(
+                                        category: categories[index],
+                                      ),
+                                    ));
+                              },
+                              child: Container(
+                                height: 38,
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(8)),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                margin: const EdgeInsets.all(6),
+                                child: Center(
+                                  child: Text(
+                                    categories[index]['category_name'],
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ),
+                ],
               ),
             ),
-            preferredSize: Size.fromHeight(56)),
+            preferredSize: Size.fromHeight(78)),
       ),
       body: SingleChildScrollView(
         controller: top_stories_scrollController,
